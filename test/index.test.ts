@@ -1,0 +1,112 @@
+import { locateFeed } from "../src"
+import nock from "nock"
+
+beforeAll(() => nock.disableNetConnect())
+afterAll(() => nock.enableNetConnect())
+
+test("finds JSON feed by exact URL", async () => {
+  const scope = nock("https://www.example.org")
+    .get("/feed.json")
+    .reply(200, { feed_url: "https://www.example.org/feed.json" })
+
+  const feedURL = await locateFeed("https://www.example.org/feed.json")
+  expect(feedURL).toBe("https://www.example.org/feed.json")
+
+  scope.done()
+})
+
+test("throws error if JSON feed has no feed_url", async () => {
+  const scope = nock("https://www.example.org")
+    .get("/feed.json")
+    .reply(200, {})
+
+  expect(locateFeed("https://www.example.org/feed.json")).rejects.toThrow()
+
+  scope.done()
+})
+
+test("uses URL in the JSON feed body", async () => {
+  const scope = nock("https://www.example.org")
+    .get("/feed.json")
+    .reply(200, { feed_url: "https://www.example.org/feeds/json" })
+
+  const feedURL = await locateFeed("https://www.example.org/feed.json")
+  expect(feedURL).toBe("https://www.example.org/feeds/json")
+
+  scope.done()
+})
+
+test("follows redirects", async () => {
+  const scope1 = nock("https://example.org")
+    .get("/feed.json")
+    .reply(301, "", { location: "https://www.example.org/feed.json" })
+  const scope2 = nock("https://www.example.org")
+    .get("/feed.json")
+    .reply(200, { feed_url: "https://www.example.org/feeds/json" })
+
+  const feedURL = await locateFeed("https://example.org/feed.json")
+  expect(feedURL).toBe("https://www.example.org/feeds/json")
+
+  scope1.done()
+  scope2.done()
+})
+
+test("finds JSON feed from HTML page", async () => {
+  const links = [
+    { type: "application/json", href: "https://www.example.org/feed.json" },
+  ]
+  const scope = nock("https://www.example.org")
+    .get("/")
+    .reply(200, htmlWithLinks(links), { "content-type": "text/html" })
+    .get("/feed.json")
+    .reply(200, { feed_url: "https://www.example.org/feed.json" })
+
+  const feedURL = await locateFeed("https://www.example.org/")
+  expect(feedURL).toBe("https://www.example.org/feed.json")
+
+  scope.done()
+})
+
+test("finds JSON feed from HTML page with relative path", async () => {
+  const links = [{ type: "application/json", href: "/feed.json" }]
+  const scope = nock("https://www.example.org")
+    .get("/")
+    .reply(200, htmlWithLinks(links), { "content-type": "text/html" })
+    .get("/feed.json")
+    .reply(200, { feed_url: "https://www.example.org/feed.json" })
+
+  const feedURL = await locateFeed("https://www.example.org/")
+  expect(feedURL).toBe("https://www.example.org/feed.json")
+
+  scope.done()
+})
+
+test("throws error when no feeds are found on HTML page", async () => {
+  const scope = nock("https://www.example.org")
+    .get("/")
+    .reply(200, htmlWithLinks([]), { "content-type": "text/html" })
+
+  expect(locateFeed("https://www.example.org")).rejects.toThrow()
+
+  scope.done()
+})
+
+interface FeedLink {
+  type: string
+  href: string
+}
+
+function htmlWithLinks(links: FeedLink[] = []): string {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+${links
+  .map(
+    ({ type, href }) => `<link rel="alternate" type="${type}" href="${href}">`
+  )
+  .join("\n")}
+</head>
+<body>Hello!</body>
+</html>`
+}

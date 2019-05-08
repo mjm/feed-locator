@@ -2,6 +2,8 @@ import { URL } from "url"
 import fetch from "isomorphic-unfetch"
 import * as typeis from "type-is"
 import * as cheerio from "cheerio"
+import * as xpath from "xpath"
+import { DOMParser } from "xmldom"
 
 export async function locateFeed(url: string): Promise<string> {
   const found = await attempt(url)
@@ -65,10 +67,26 @@ async function handleHtml(
   return null
 }
 
+const xpathSelect = xpath.useNamespaces({
+  atom: "http://www.w3.org/2005/Atom",
+})
+
 async function handleFeed(
   url: string,
-  _response: fetch.IsomorphicResponse
+  response: fetch.IsomorphicResponse
 ): Promise<string | null> {
+  const content = await response.text()
+  const document = new DOMParser().parseFromString(content)
+
+  const selfLink = xpathSelect(
+    '//atom:link[@rel="self"]/@href',
+    document,
+    true
+  ) as any
+  if (selfLink && selfLink.value) {
+    return selfLink.value
+  }
+
   return url
 }
 

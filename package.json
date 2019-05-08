@@ -48,8 +48,11 @@
     "@types/cheerio": "^0.22.11",
     "@types/node-fetch": "^2.3.3",
     "@types/type-is": "^1.6.2",
+    "@types/xmldom": "^0.1.29",
     "cheerio": "^1.0.0-rc.3",
     "isomorphic-unfetch": "^3.0.0",
-    "type-is": "^1.6.18"
+    "type-is": "^1.6.18",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.27"
   }
 }

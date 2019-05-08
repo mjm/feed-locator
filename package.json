@@ -1,6 +1,15 @@
 {
   "name": "feed-locator",
   "version": "0.1.0",
+  "license": "ISC",
+  "author": {
+    "url": "https://www.mattmoriarity.com/",
+    "name": "Matt Moriarity"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mjm/feed-locator.git"
+  },
   "main": "dist/index.js",
   "umd:main": "dist/feed-locator.umd.production.js",
   "module": "dist/feed-locator.es.production.js",

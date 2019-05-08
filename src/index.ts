@@ -21,11 +21,12 @@ async function attempt(url: string): Promise<string | null> {
     return null
   }
 
-  switch (typeis.is(mimeType, ["html", "rss", "atom", "json"])) {
+  switch (typeis.is(mimeType, ["html", "rss", "atom", "xml", "json"])) {
     case "html":
       return handleHtml(url, response)
     case "rss":
     case "atom":
+    case "xml":
       return handleFeed(url, response)
     case "json":
       return handleJson(url, response)

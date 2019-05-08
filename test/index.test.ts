@@ -139,6 +139,25 @@ test("uses self link for Atom feeds if present", async () => {
   scope.done()
 })
 
+test("handles XML feeds with generic application/xml type", async () => {
+  const feed = `
+  <?xml version="1.0" encoding="UTF-8"?>
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <atom:link href="https://example.org/" />
+      <atom:link href="https://www.example.org/feeds/rss" rel="self" type="application/rss+xml" />
+    </channel>
+  </rss>`
+  const scope = nock("https://www.example.org")
+    .get("/feed.xml")
+    .reply(200, feed, { "content-type": "application/xml" })
+
+  const feedURL = await locateFeed("https://www.example.org/feed.xml")
+  expect(feedURL).toBe("https://www.example.org/feeds/rss")
+
+  scope.done()
+})
+
 test("finds JSON feed from HTML page", async () => {
   const links = [
     { type: "application/json", href: "https://www.example.org/feed.json" },

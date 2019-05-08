@@ -23,9 +23,8 @@ async function attempt(url: string): Promise<string | null> {
     case "html":
       return handleHtml(url, response)
     case "rss":
-      return handleRss(url, response)
     case "atom":
-      return handleAtom(url, response)
+      return handleFeed(url, response)
     case "json":
       return handleJson(url, response)
     default:
@@ -66,18 +65,11 @@ async function handleHtml(
   return null
 }
 
-async function handleRss(
-  _url: string,
+async function handleFeed(
+  url: string,
   _response: fetch.IsomorphicResponse
 ): Promise<string | null> {
-  return null
-}
-
-async function handleAtom(
-  _url: string,
-  _response: fetch.IsomorphicResponse
-): Promise<string | null> {
-  return null
+  return url
 }
 
 async function handleJson(

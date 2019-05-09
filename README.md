@@ -1,5 +1,9 @@
 # feed-locator
 
+[![npm version](https://img.shields.io/npm/v/feed-locator.svg)](https://npm.im/feed-locator)
+[![CircleCI](https://img.shields.io/circleci/project/github/mjm/feed-locator/master.svg)](https://circleci.com/gh/mjm/feed-locator)
+![ISC License](https://img.shields.io/npm/l/feed-locator.svg)
+
 Finds the URL for the canonical feed of a given URL. Finds JSON, Atom, and RSS feeds.
 
 ## Installation

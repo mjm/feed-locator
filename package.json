@@ -1,6 +1,6 @@
 {
   "name": "feed-locator",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "license": "ISC",
   "author": {
     "url": "https://www.mattmoriarity.com/",
@@ -20,7 +20,8 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test"
+    "test": "tsdx test",
+    "semantic-release": "semantic-release"
   },
   "peerDependencies": {},
   "husky": {
@@ -42,7 +43,8 @@
     "pretty-quick": "^1.10.0",
     "tsdx": "^0.5.7",
     "tslib": "^1.9.3",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "semantic-release": "^15.13.12"
   },
   "dependencies": {
     "@types/cheerio": "^0.22.11",

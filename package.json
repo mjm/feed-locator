@@ -54,7 +54,7 @@
     "cheerio": "^1.0.0-rc.3",
     "isomorphic-unfetch": "^3.0.0",
     "type-is": "^1.6.18",
-    "xmldom": "^0.1.27",
+    "xmldom": "^0.5.0",
     "xpath": "0.0.27"
   }
 }
